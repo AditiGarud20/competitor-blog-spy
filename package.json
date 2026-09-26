@@ -1,0 +1,18 @@
+{
+  "name": "competitor-blog-spy",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Competitor Blog Spy - Real-Time Competitor Content Intelligence & Monitoring Platform",
+  "scripts": {
+    "dev": "concurrently -k -p \"[{name}]\" -n \"BACKEND,FRONTEND\" -c \"cyan.bold,green.bold\" \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cmd /c \"cd backend && npm run dev\"",
+    "dev:frontend": "cmd /c \"cd frontend && npm run dev\"",
+    "install:all": "cmd /c \"npm install && cd backend && npm install && cd ../frontend && npm install\"",
+    "build": "cmd /c \"cd backend && npm run build && cd ../frontend && npm run build\"",
+    "seed": "cmd /c \"cd backend && npm run seed\"",
+    "test": "cmd /c \"cd backend && npm test\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

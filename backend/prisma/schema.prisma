@@ -1,0 +1,198 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String
+  password  String
+  role      String   @default("ADMIN")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Competitor {
+  id                   String                 @id @default(uuid())
+  name                 String
+  websiteUrl           String
+  blogUrl              String?
+  rssUrl               String?
+  sitemapUrl           String?
+  enabled              Boolean                @default(true)
+  checkIntervalMinutes Int                    @default(5)
+  status               String                 @default("ACTIVE") // ACTIVE, PAUSED, ERROR, ANALYZING, TEMPORARILY_UNAVAILABLE
+  primaryStrategy      String                 @default("RSS")    // RSS, SITEMAP, DIRECT_PAGE
+  secondaryStrategy    String?                // SITEMAP, DIRECT_PAGE
+  fallbackStrategy     String?                // DIRECT_PAGE
+  lastCheckedAt        DateTime?
+  lastSuccessAt        DateTime?
+  lastError            String?
+  failureCount         Int                    @default(0)
+  articlesCount        Int                    @default(0)
+  averageDelaySeconds  Int?
+  analysisData         String?                // JSON analysis findings
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
+
+  sources              MonitoringSource[]
+  checks               MonitoringCheck[]
+  articles             Article[]
+  detectionEvents      DetectionEvent[]
+  monitoringErrors     MonitoringError[]
+}
+
+model MonitoringSource {
+  id            String     @id @default(uuid())
+  competitorId  String
+  competitor    Competitor @relation(fields: [competitorId], references: [id], onDelete: Cascade)
+  type          String     // RSS, SITEMAP, DIRECT_PAGE
+  url           String
+  status        String     @default("ACTIVE") // ACTIVE, BLOCKED, ERROR, DISCOVERED
+  discoveredAt  DateTime   @default(now())
+  lastCheckedAt DateTime?
+  metadata      String?    // JSON metadata (e.g. feed format, sitemap count)
+}
+
+model Article {
+  id                    String           @id @default(uuid())
+  competitorId          String
+  competitor            Competitor       @relation(fields: [competitorId], references: [id], onDelete: Cascade)
+  title                 String
+  canonicalUrl          String           @unique
+  originalUrl           String
+  content               String
+  excerpt               String?
+  featuredImage         String?
+  inlineImages          String?          // JSON array string
+  author                String?
+  publishedAt           DateTime
+  detectedAt            DateTime         @default(now())
+  detectionDelaySeconds Int
+  metaDescription       String?
+  categories            String?          // JSON array string
+  tags                  String?          // JSON array string
+  relevantLinks         String?          // JSON array string
+  structuredData        String?          // JSON-LD or meta string
+  contentHash           String
+  guid                  String?
+  status                String           @default("DETECTED") // DETECTED, EXTRACTED, PROCESSED
+  firstDetectedMethod   String           @default("RSS")      // RSS, SITEMAP, DIRECT_PAGE
+  detectedMethods       String           @default("[\"RSS\"]") // JSON array string
+  createdAt             DateTime         @default(now())
+  updatedAt             DateTime         @updatedAt
+
+  detectionEvents       DetectionEvent[]
+  notifications         Notification[]
+}
+
+model DetectionEvent {
+  id                String           @id @default(uuid())
+  articleId         String
+  article           Article          @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  competitorId      String
+  competitor        Competitor       @relation(fields: [competitorId], references: [id], onDelete: Cascade)
+  method            String           // RSS, SITEMAP, DIRECT_PAGE
+  checkedAt         DateTime
+  detectedAt        DateTime         @default(now())
+  publishedAt       DateTime
+  delaySeconds      Int
+  monitoringCheckId String?
+  monitoringCheck   MonitoringCheck? @relation(fields: [monitoringCheckId], references: [id], onDelete: SetNull)
+  createdAt         DateTime         @default(now())
+}
+
+model MonitoringCheck {
+  id               String           @id @default(uuid())
+  competitorId     String
+  competitor       Competitor       @relation(fields: [competitorId], references: [id], onDelete: Cascade)
+  strategy         String           // RSS, SITEMAP, DIRECT_PAGE
+  startedAt        DateTime
+  completedAt      DateTime
+  durationMs       Int
+  status           String           // SUCCESS, ERROR, TIMEOUT
+  urlsChecked      Int              @default(0)
+  articlesFound    Int              @default(0)
+  newArticles      Int              @default(0)
+  duplicatesIgnored Int             @default(0)
+  httpStatus       Int?
+  errorMessage     String?
+  retryCount       Int              @default(0)
+  createdAt        DateTime         @default(now())
+
+  detectionEvents  DetectionEvent[]
+}
+
+model MonitoringError {
+  id           String     @id @default(uuid())
+  competitorId String
+  competitor   Competitor @relation(fields: [competitorId], references: [id], onDelete: Cascade)
+  strategy     String
+  errorMessage String
+  statusCode   Int?
+  stack        String?
+  occurredAt   DateTime   @default(now())
+}
+
+model Notification {
+  id           String     @id @default(uuid())
+  type         String     // ARTICLE_DETECTED, TARGET_MET, TARGET_EXCEEDED, MONITORING_FAILED
+  title        String
+  message      String
+  competitorId String?
+  articleId    String?
+  article      Article?   @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  delaySeconds Int?
+  method       String?
+  read         Boolean    @default(false)
+  createdAt    DateTime   @default(now())
+}
+
+model DemoArticle {
+  id            String    @id @default(uuid())
+  title         String
+  slug          String    @unique
+  content       String
+  excerpt       String?
+  author        String    @default("Demo Editorial Team")
+  featuredImage String?
+  tags          String?   // comma-separated
+  publishedAt   DateTime  @default(now())
+  isDetected    Boolean   @default(false)
+  detectedAt    DateTime?
+  detectionMethod String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model SystemMetric {
+  id          String   @id @default(uuid())
+  metricKey   String
+  metricValue Float
+  recordedAt  DateTime @default(now())
+}
+
+model WebsiteSearchRecord {
+  id              String   @id @default(uuid())
+  query           String
+  domain          String
+  websiteUrl      String
+  title           String?
+  status          String   @default("ANALYZED") // SEARCHED, ANALYZED, SAVED
+  rssFound        Boolean  @default(false)
+  rssUrl          String?
+  sitemapFound    Boolean  @default(false)
+  sitemapUrl      String?
+  blogUrl         String?
+  primaryStrategy String?  @default("RSS")
+  findings        String?  // JSON string of analysis results
+  competitorId    String?
+  searchedAt      DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
