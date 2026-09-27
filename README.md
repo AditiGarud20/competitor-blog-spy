@@ -1,99 +1,91 @@
-# Competitor Blog Spy & Real-Time Content Monitoring System
+<div align="center">
 
-[![Engine Status](https://img.shields.io/badge/Monitoring%20Engine-ONLINE-06b6d4?style=flat-square)](#)
-[![Target SLA](https://img.shields.io/badge/Detection%20Target-%E2%89%A4%205%20min-10b981?style=flat-square)](#)
-[![Tests Passing](https://img.shields.io/badge/Automated%20Tests-13%20passed-10b981?style=flat-square)](#)
-[![Stack](https://img.shields.io/badge/Stack-React%20%7C%20Node%20%7C%20Prisma%20%7C%20Socket.IO-8b5cf6?style=flat-square)](#)
+# 🕵️‍♂️ Competitor Blog Spy
+**Real-Time Content Monitoring & Intelligence Platform**
 
-> **Real-Time Competitor Content Intelligence & Monitoring Platform**  
-> Autonomous multi-strategy blog detection engine designed to identify newly published competitor articles under 5 minutes with second-precision latency tracking, 100-site scale testing, and zero duplicate tolerance.
+[![Engine Status](https://img.shields.io/badge/Monitoring%20Engine-ONLINE-06b6d4?style=for-the-badge&logo=dependabot)](#)
+[![Target SLA](https://img.shields.io/badge/Detection%20Target-%E2%89%A4%205%20min-10b981?style=for-the-badge&logo=target)](#)
+[![Automated Tests](https://img.shields.io/badge/Tests-13%20passed-10b981?style=for-the-badge&logo=jest)](#)
+[![Stack](https://img.shields.io/badge/Stack-React%20%7C%20Node%20%7C%20Prisma%20%7C%20Socket.IO-8b5cf6?style=for-the-badge&logo=react)](#)
+
+*Autonomous multi-strategy blog detection engine designed to identify newly published competitor articles under 5 minutes.* <br/>
+*Built with second-precision latency tracking, 100-site scale testing, and zero duplicate tolerance.*
+
+</div>
 
 ---
 
-## 🌟 Key Highlights & Engineering Capabilities
+## ✨ Key Highlights & Engineering Capabilities
 
-1. **Sub-5-Minute Latency Tracking Engine**:
-   - **Formula**: `Detection Delay = Detection Time - Publication Time`
-   - Primary target: **≤ 5 minutes**.
-   - **Strict transparency**: Delays above 5 minutes are NEVER rounded or concealed (e.g., `7m 08s`, `14m 32s`, `1h 04m 31s` displayed explicitly).
+<table>
+<tr>
+<td width="50%">
 
-2. **10-Step Automatic Website Analysis**:
-   - Automatically probes any domain for RSS/Atom syndication, XML sitemaps, nested sitemap indexes, article URL patterns, OpenGraph, JSON-LD schemas, and canonical links.
-   - Generates recommended primary, secondary, and fallback detection strategies with architectural rationale.
+### ⚡ Sub-5-Minute Latency Engine
+- **Formula**: `Detection Delay = Detection Time - Publication Time`
+- **Target**: **≤ 5 minutes**.
+- **Transparency**: Delays above 5 minutes are NEVER rounded or concealed.
 
-3. **Three Core Detection Strategies**:
-   - **Strategy 1 — RSS / Atom Feed**: High-frequency delta polling parsing title, link, guid, author, and pubDate with fallback XML parsing.
-   - **Strategy 2 — XML Sitemap**: Nested sitemap index traversal extracting `<loc>` and `<lastmod>` timestamps.
-   - **Strategy 3 — Direct Blog Page**: Structural HTML heuristics with Cheerio for unfeeded or JS-rendered competitor blogs.
+</td>
+<td width="50%">
 
-4. **Multi-Strategy Deduplication Engine**:
-   - Tracking parameter stripping (`utm_*`, `fbclid`, `gclid`, `ref`), trailing slash canonicalization, and SHA-256 content hashing.
-   - If multiple strategies detect the same article, a single unique record is maintained with all detecting methods audited.
+### 🔍 10-Step Automatic Analysis
+- Automatically probes domains for RSS/Atom syndication, XML sitemaps, nested sitemaps, URL patterns, OpenGraph, JSON-LD, and canonical links.
+- Generates recommended primary and fallback strategies.
 
-5. **100-Website Scale & Worker Pool Lab**:
-   - Non-blocking concurrent worker pool (configurable: 5, 10, 20 workers) with exponential backoff retry.
-   - Live interactive 100-site simulation demonstrating isolation: slow/failing sites never block healthy targets.
+</td>
+</tr>
+<tr>
+<td>
 
-6. **Controlled Demo Blog & 1-Click Live Detection Workflow**:
-   - Internal live competitor blog (`/demo-blog`) with dynamic RSS (`/demo-blog/feed.xml`) and Sitemap (`/demo-blog/sitemap.xml`).
-   - 1-click button **"Run Live Detection Demo"** for live evaluator presentations.
+### 🧠 Multi-Strategy Deduplication
+- Strips tracking parameters (`utm_*`, `fbclid`, etc.)
+- Trailing slash canonicalization
+- **SHA-256** content hashing
+- Maintains single unique records with audited methods.
 
-7. **Production SaaS Aesthetic**:
-   - Sleek dark theme (Datadog/Linear/Grafana inspired) with command palette (`Ctrl+K`), real-time WebSocket notifications, visual 7-stage detection timeline, and Recharts analytics.
+</td>
+<td>
+
+### 🏭 100-Website Worker Pool Lab
+- Non-blocking concurrent worker pool (5, 10, 20 workers).
+- Exponential backoff retry.
+- Live 100-site simulation demonstrating isolation.
+
+</td>
+</tr>
+</table>
+
+### 🛠️ Three Core Detection Strategies
+
+| Strategy | Description | Technology / Method |
+| :--- | :--- | :--- |
+| **1. RSS / Atom Feed** | High-frequency delta polling. Parses title, link, guid, author, pubDate. | Fast XML Parsing |
+| **2. XML Sitemap** | Nested sitemap index traversal. Extracts `<loc>` and `<lastmod>`. | Timestamp DX |
+| **3. Direct Blog Page** | Structural HTML heuristics for JS-rendered or non-feed competitor blogs. | Cheerio DOM Parsing |
 
 ---
 
 ## 🏗️ Architecture Overview
 
-```
-                          ┌───────────────────────────┐
-                          │   Competitor Websites     │
-                          │ (ApexTech, CloudScale...) │
-                          └─────────────┬─────────────┘
-                                        │
-                                        ▼
-                         ┌─────────────────────────────┐
-                         │   10-Step Website Analyzer  │
-                         └──────────────┬──────────────┘
-                                        │
-                 ┌──────────────────────┼──────────────────────┐
-                 ▼                      ▼                      ▼
-        ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-        │   RSS / Atom    │    │   XML Sitemap   │    │ Direct Blog DOM │
-        │ (Fastest Delta) │    │  (<lastmod> DX) │    │ (HTML Heuristic)│
-        └────────┬────────┘    └────────┬────────┘    └────────┬────────┘
-                 │                      │                      │
-                 └──────────────────────┼──────────────────────┘
-                                        ▼
-                        ┌───────────────────────────────┐
-                        │   Concurrent Worker Pool      │
-                        │ (Configurable 10 Workers)     │
-                        └───────────────┬───────────────┘
-                                        │
-                                        ▼
-                        ┌───────────────────────────────┐
-                        │   Deduplication Engine        │
-                        │ (Canonical URL + SHA256 Hash) │
-                        └───────────────┬───────────────┘
-                                        │
-                                        ▼
-                        ┌───────────────────────────────┐
-                        │   Full Article Extractor      │
-                        │  (OpenGraph / JSON-LD / Body) │
-                        └───────────────┬───────────────┘
-                                        │
-                                        ▼
-                        ┌───────────────────────────────┐
-                        │   Prisma Database Store       │
-                        │ (SQLite embedded / PG ready)  │
-                        └───────────────┬───────────────┘
-                                        │
-                 ┌──────────────────────┼──────────────────────┐
-                 ▼                      ▼                      ▼
-        ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-        │ Real-Time Feed  │    │  WebSocket Push │    │ Analytics Graph │
-        │  & Dashboard    │    │  Notifications  │    │ (≤ 5m SLA Line) │
-        └─────────────────┘    └─────────────────┘    └─────────────────┘
+```mermaid
+graph TD;
+    Competitors((Competitor Websites)) --> Analyzer[10-Step Website Analyzer]
+    
+    Analyzer --> RSS[RSS / Atom Fast Delta]
+    Analyzer --> Sitemap[XML Sitemap Traverse]
+    Analyzer --> HTML[Direct Blog HTML DOM]
+    
+    RSS --> Pool[Concurrent Worker Pool]
+    Sitemap --> Pool
+    HTML --> Pool
+    
+    Pool --> Dedup{Deduplication Engine<br/>SHA256 Hash}
+    Dedup --> Extract[Full Article Extractor]
+    Extract --> DB[(Prisma Database)]
+    
+    DB --> Dashboard[Real-Time Dashboard]
+    DB --> WS[WebSocket Notifications]
 ```
 
 ---
@@ -101,59 +93,88 @@
 ## 🚀 Quick Start & Installation
 
 ### Prerequisites
-- **Node.js**: v18+ (tested on Node v24)
-- **NPM**: v9+
+* **Node.js**: v18+ (tested on Node v24)
+* **NPM**: v9+
 
-### 1. Install All Dependencies
-From the repository root:
+### 1️⃣ Install & Setup
 ```bash
+# 1. Install All Dependencies
 npm run install:all
-```
-*(Or install in `/backend` and `/frontend` individually).*
 
-### 2. Initialize Database & Seed Baseline Data
-```bash
+# 2. Initialize Database & Seed
 cd backend
 npx prisma db push
 npm run seed
-```
 
-### 3. Run Automated Tests
-```bash
+# 3. Run Automated Tests
 npm test
 ```
-All 13 unit & integration tests verify URL normalization, deduplication, exact delay formatting, worker pool concurrency, and XML parsing.
 
-### 4. Start Full-Stack Application
-From the repository root:
+### 2️⃣ Start the Application
 ```bash
 npm run dev
 ```
 
-- **Frontend Console**: [http://localhost:5173](http://localhost:5173)
-- **Backend API**: [http://localhost:4000](http://localhost:4000)
-- **Built-in Demo Blog**: [http://localhost:4000/demo-blog](http://localhost:4000/demo-blog)
-- **Demo RSS Feed**: [http://localhost:4000/demo-blog/feed.xml](http://localhost:4000/demo-blog/feed.xml)
-- **Demo XML Sitemap**: [http://localhost:4000/demo-blog/sitemap.xml](http://localhost:4000/demo-blog/sitemap.xml)
+| Service | Local URL |
+| :--- | :--- |
+| 🎨 **Frontend Console** | [http://localhost:5173](http://localhost:5173) |
+| ⚙️ **Backend API** | [http://localhost:4000](http://localhost:4000) |
+| 🧪 **Built-in Demo Blog**| [http://localhost:4000/demo-blog](http://localhost:4000/demo-blog) |
 
 ---
 
-## 🎯 Evaluator Demonstration Script (Step-by-Step)
+## 🎯 Evaluator Demonstration Script
 
-| Step | Action | Page / Route | What to Observe |
-|:---|:---|:---|:---|
-| **1** | Open Dashboard | [http://localhost:5173/](http://localhost:5173/) | Live KPIs, system ONLINE badge, latency chart with 5m SLA line, real-time activity feed. |
-| **2** | Inspect Competitors | `/competitors` | Baseline competitor list, detection strategies, last check, and exact unrounded average delay. |
-| **3** | Add Competitor | `/competitors/new` | Enter `https://techcrunch.com` or click **ApexTech Demo** preset. Watch the **10-Step Automatic Analysis** probe RSS, sitemap, schemas, and recommend strategies. |
-| **4** | 1-Click Live Demo | `/demo-lab` | Click **"Run Live Detection Demo"**. Watch an article publish to the demo blog, get detected, delay calculated (1m 49s), notification emitted, and article appear. |
-| **5** | Inspect Article Detail | `/articles/:id` | View the **Visual 7-Stage Detection Timeline** with second-precision timestamps and full extracted content. |
-| **6** | 100-Site Scale Test | `/scale-test` | Click **"Run 100 Website Simulation"**. Watch concurrent worker pool process fast, slow, timeout and duplicate sites in parallel. |
-| **7** | View Audit Logs | `/logs` | Review check durations, URLs audited, duplicate suppression counts, and HTTP status codes. |
-| **8** | Verify Checklist | `/checklist` | Review all 25 specification criteria with direct links to verify compliance. |
+Follow this step-by-step guide to evaluate the system's capabilities:
+
+<table>
+  <tr>
+    <th>Step</th>
+    <th>Action</th>
+    <th>Page / Route</th>
+    <th>What to Observe</th>
+  </tr>
+  <tr>
+    <td><b>1</b></td>
+    <td>Open Dashboard</td>
+    <td><code>/</code></td>
+    <td>Live KPIs, system ONLINE badge, latency chart with 5m SLA line, real-time activity feed.</td>
+  </tr>
+  <tr>
+    <td><b>2</b></td>
+    <td>Inspect Competitors</td>
+    <td><code>/competitors</code></td>
+    <td>Baseline competitor list, detection strategies, last check, and exact unrounded average delay.</td>
+  </tr>
+  <tr>
+    <td><b>3</b></td>
+    <td>Add Competitor</td>
+    <td><code>/competitors/new</code></td>
+    <td>Enter a URL or click a preset. Watch the <b>10-Step Automatic Analysis</b> probe feeds and schemas.</td>
+  </tr>
+  <tr>
+    <td><b>4</b></td>
+    <td>Live Demo</td>
+    <td><code>/demo-lab</code></td>
+    <td>Click <b>"Run Live Detection Demo"</b>. Watch an article publish, get detected, and appear in real-time.</td>
+  </tr>
+  <tr>
+    <td><b>5</b></td>
+    <td>Inspect Article</td>
+    <td><code>/articles/:id</code></td>
+    <td>View the <b>Visual 7-Stage Detection Timeline</b> with second-precision timestamps.</td>
+  </tr>
+  <tr>
+    <td><b>6</b></td>
+    <td>100-Site Scale Test</td>
+    <td><code>/scale-test</code></td>
+    <td>Watch concurrent worker pool process fast, slow, timeout and duplicate sites in parallel.</td>
+  </tr>
+</table>
 
 ---
 
-## 📊 Environment Variables (`backend/.env`)
+## ⚙️ Environment Variables (`backend/.env`)
 
 ```env
 PORT=4000
@@ -168,17 +189,9 @@ NODE_ENV=development
 
 ## 🛡️ Reliability & Duplicate Prevention
 
-1. **URL Normalizer**:
-   - Strips UTM query tags (`utm_source`, `utm_medium`, etc.)
-   - Resolves relative URLs to absolute links
-   - Normalizes trailing slashes and drops anchor fragments
-2. **SHA-256 Content Fingerprinting**:
-   - Generates cryptographic hash of sanitized title and content body to prevent republishes under different URLs.
-3. **Multi-Strategy Association**:
-   - If RSS detects an article and Sitemap later indexes it, the system appends `SITEMAP` to `detectedMethods` without creating a duplicate article row.
-4. **Failure Isolation**:
-   - Timeouts and HTTP errors increment `failureCount`, mark site as `TEMPORARILY_UNAVAILABLE`, and retry with exponential backoff without interrupting other monitored targets.
- 
- # #   R a i l w a y   D e p l o y m e n t  
- S e t   t h e   \ D A T A B A S E _ U R L \   t o   y o u r   R a i l w a y   P o s t g r e s   s t r i n g   t o   d e p l o y   t h e   d a t a b a s e   i n   t h e   c l o u d .  
- 
+* 🔗 **URL Normalizer**: Strips UTM query tags, resolves relative URLs, normalizes trailing slashes.
+* 🔐 **SHA-256 Fingerprinting**: Cryptographic hash of sanitized title and content body.
+* 🤝 **Multi-Strategy Association**: Merges detection methods (e.g. RSS + Sitemap) without duplicating rows.
+* 🧱 **Failure Isolation**: Timeouts mark sites as `TEMPORARILY_UNAVAILABLE` with exponential backoff.
+
+> **Railway Deployment**: Set the `DATABASE_URL` to your Railway Postgres string to deploy the database in the cloud.
