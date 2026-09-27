@@ -178,3 +178,7 @@ NODE_ENV=development
    - If RSS detects an article and Sitemap later indexes it, the system appends `SITEMAP` to `detectedMethods` without creating a duplicate article row.
 4. **Failure Isolation**:
    - Timeouts and HTTP errors increment `failureCount`, mark site as `TEMPORARILY_UNAVAILABLE`, and retry with exponential backoff without interrupting other monitored targets.
+ 
+ # #   R a i l w a y   D e p l o y m e n t  
+ S e t   t h e   \ D A T A B A S E _ U R L \   t o   y o u r   R a i l w a y   P o s t g r e s   s t r i n g   t o   d e p l o y   t h e   d a t a b a s e   i n   t h e   c l o u d .  
+ 
