@@ -30,7 +30,7 @@ export const Header: React.FC<HeaderProps> = ({
   onToggleDemoMode
 }) => {
   return (
-    <header className="h-16 bg-[#0b0f19]/90 border-b border-slate-800/80 px-6 flex items-center justify-between sticky top-0 z-20 backdrop-blur-md">
+    <header className="h-16 bg-[#0b0f19]/80 border-b border-slate-800/80 px-6 flex items-center justify-between sticky top-0 z-20 backdrop-blur-xl shadow-sm shadow-cyan-900/10">
       {/* Title & Status */}
       <div className="flex items-center space-x-4">
         <div>

@@ -12,7 +12,8 @@ import {
   Sparkles,
   CheckCircle2,
   BrainCircuit,
-  Network from 'lucide-react';
+  Network
+} from 'lucide-react';
 import { api } from '../../services/api';
 
 interface CommandPaletteProps {
