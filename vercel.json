@@ -1,27 +1,20 @@
 {
   "version": 2,
+  "installCommand": "npm run install:all",
   "builds": [
     {
       "src": "frontend/package.json",
       "use": "@vercel/vite"
     },
     {
-      "src": "api/index.ts",
+      "src": "api/[...slug].ts",
       "use": "@vercel/node"
     }
   ],
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/api/index.ts"
-    },
-    {
-      "source": "/demo-blog/(.*)",
-      "destination": "/api/index.ts"
-    },
-    {
-      "source": "/socket.io/(.*)",
-      "destination": "/api/index.ts"
+      "destination": "/api/[...slug].ts"
     },
     {
       "source": "/(.*)",
