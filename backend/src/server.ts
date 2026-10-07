@@ -30,7 +30,9 @@ const server = http.createServer(app);
 initRealtime(server);
 
 // Middleware
-app.use(cors({ origin: '*' }));
+app.use(cors({ 
+  origin: ['http://localhost:5173', 'https://competitor-blog-spy1.vercel.app'] 
+}));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
@@ -69,22 +71,24 @@ app.get('/api', (req, res) => {
 
 const PORT = process.env.PORT || 4000;
 
-server.listen(PORT, async () => {
-  console.log(`================================================================`);
-  console.log(`🚀 Competitor Blog Spy Engine running on http://localhost:${PORT}`);
-  console.log(`📰 Internal Demo Blog running on http://localhost:${PORT}/demo-blog`);
-  console.log(`⚡ WebSocket Stream ready for real-time dashboard events`);
-  console.log(`================================================================`);
+if (process.env.VERCEL !== '1') {
+  server.listen(PORT, async () => {
+    console.log(`================================================================`);
+    console.log(`🚀 Competitor Blog Spy Engine running on http://localhost:${PORT}`);
+    console.log(`📰 Internal Demo Blog running on http://localhost:${PORT}/demo-blog`);
+    console.log(`⚡ WebSocket Stream ready for real-time dashboard events`);
+    console.log(`================================================================`);
 
-  // Seed default data if database is fresh
-  try {
-    await seedDatabaseIfEmpty(`http://localhost:${PORT}`);
-  } catch (err) {
-    console.error('Seed verification error:', err);
-  }
+    // Seed default data if database is fresh
+    try {
+      await seedDatabaseIfEmpty(`http://localhost:${PORT}`);
+    } catch (err) {
+      console.error('Seed verification error:', err);
+    }
 
-  // Start continuous monitoring engine (default 60s cycle)
-  monitoringEngine.startContinuousMonitoring(60000);
-});
+    // Start continuous monitoring engine (default 60s cycle)
+    monitoringEngine.startContinuousMonitoring(60000);
+  });
+}
 
 export default app;
